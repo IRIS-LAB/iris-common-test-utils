@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/IRIS-LAB/iris-common-test-utils#readme",
   "dependencies": {
-    "@u-iris/iris-common": "^2.0.0-0",
+    "@u-iris/iris-common": "^2.0.0",
     "jest": "^24.8.0"
   },
   "devDependencies": {
