@@ -1,5 +1,6 @@
 const path = require('path')
 const gulp = require('gulp')
+const concat = require('gulp-concat')
 const clean = require('gulp-clean')
 const ts = require('gulp-typescript')
 const webpack = require('webpack-stream')
@@ -34,13 +35,18 @@ gulp.task('build:typescript', gulp.series(() => {
     .pipe(webpack(require('./webpack.config.js')))
     .pipe(gulp.dest(options.output))
 }))
-gulp.task('build:typescript-typings-index', () => {
+gulp.task('build:typescript-typings-with-module', () => {
   return file('index.d.ts', `declare module '${pkg.name}' { \n{{TYPES}}\n}`, { src: true })
     .pipe(replace('{{TYPES}}', fs.readFileSync(path.resolve(options.output, 'types', 'index.d.ts'))))
+    .pipe(gulp.dest(path.resolve(options.output, 'types')))
+})
+gulp.task('build:typescript-typings-concat', () => {
+  return gulp.src([path.resolve(options.output, 'types', 'index.d.ts'), path.resolve(__dirname, '@types', '**/*.d.ts')], { allowEmpty: true })
+    .pipe(concat('index.d.ts'))
     .pipe(gulp.dest(path.resolve(options.output, 'types')))
 })
 gulp.task('watch', () => {
   gulp.watch(tsProject.config.include, gulp.series('build'))
 })
-gulp.task('build', gulp.series('build:typescript-typings', 'build:typescript', 'build:typescript-typings-index'))
+gulp.task('build', gulp.series('build:typescript-typings', 'build:typescript', 'build:typescript-typings-with-module', 'build:typescript-typings-concat'))
 gulp.task('default', gulp.series('clean', 'build'))

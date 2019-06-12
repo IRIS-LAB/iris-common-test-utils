@@ -1,6 +1,30 @@
 # iris-common-test-utils
 > Javascript test utils for IRIS
 
+## Usage
+To use iris-common-test-utils in your tests, you need to add the type _@u-iris/iris-common-test-utils_ in your tsconfig.json :
+```json
+{
+    // ...
+    "types": [
+        "jest",
+        "@u-iris/iris-common-test-utils"
+        //...
+    ],
+    // ...
+}
+```
+
+Then if you want to use jest specific matchers, import _@u-iris/iris-common-test-utils_ at the top of your test file :
+```js
+import '@u-iris/iris-common-test-utils'
+
+describe('my test', () => {
+  // ...
+})
+
+```
+
 ## Unit Test Helpers
 
 Severals utils functions for unit tests are available :
@@ -23,10 +47,17 @@ Severals utils functions for unit tests are available :
 import { checkFunctionCall } from '@u-iris/iris-common'
 import { functionOne } from 'moduleToTest' // function taking two parameters
 describe('functionOne', () => {
-    it('should call functionTwo with arguments "toto" and "test", and return "tototest", when called with the parameter "toto" and "test"', () => {
+    it('should call functionTwo with arguments "toto" and "test", and return "tototest", when called with the parameter "toto" and "test"', async () => {
         const functionTwo = jest.fn()
         await callFunctionAndCheckResult(functionOne, "tototest", "toto", "test")
         checkFunctionCall(functionTwo, "toto", "test")
     })
 })
 ```
+
+## Changelog
+| Version | Comment |
+|---|---|
+| 1.0.1 | <ul><li>export jest matchers typings</li><li>improve documentation</li></ul> |
+| 1.0.0 | <ul><li>Initial version</li></ul> |
+
