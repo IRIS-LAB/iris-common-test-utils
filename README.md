@@ -7,8 +7,7 @@ To use iris-common-test-utils in your tests, you need to add the type `@u-iris/i
 {
     "types": [
         "jest",
-        "@u-iris/iris-common-test-utils"
-
+        "@u-iris/iris-common-test-utils/jest.extend"
     ]
 }
 ```
@@ -56,6 +55,7 @@ describe('functionOne', () => {
 ## Changelog
 | Version | Comment |
 |---|---|
+| 3.0.1 | <ul><li>add custom jest matchers in root directory</li></ul> |
 | 3.0.0 | <ul><li>depends on @u-iris/iris-common@3.0.0</li></ul> |
 | 1.0.1 | <ul><li>export jest matchers typings</li><li>improve documentation</li></ul> |
 | 1.0.0 | <ul><li>Initial version</li></ul> |
