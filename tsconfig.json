@@ -30,7 +30,7 @@
   "include": [
     "src/**/*.ts",
     "spec/**/*.ts",
-    "@types/**/*.d.ts"
+    "jest.extend.d.ts"
   ],
   "exclude": [
     "node_modules"
