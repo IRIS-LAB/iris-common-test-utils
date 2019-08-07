@@ -14,7 +14,7 @@ module.exports = {
   transform: {
     "^.+\\.(ts|js)$": "ts-jest"
   },
-  collectCoverage: true,
+  collectCoverage: false,
   coverageDirectory: '<rootDir>/coverage',
   collectCoverageFrom: [
     '<rootDir>/src/**/*'
@@ -35,7 +35,8 @@ module.exports = {
   coverageReporters: [
     'text',
     'html',
-    'cobertura'
+    'cobertura',
+    'lcov'
   ],
   globals: {
     "ts-jest": {

@@ -10,9 +10,8 @@
   "scripts": {
     "build": "node_modules/.bin/gulp build",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "jest",
-    "unit": "npm run test:unit",
-    "test:unit": "jest spec/unit"
+    "test": "jest --collect-coverage",
+    "test:unit": "jest --collect-coverage spec/unit"
   },
   "repository": {
     "type": "git",
