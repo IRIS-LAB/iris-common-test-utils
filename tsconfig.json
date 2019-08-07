@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "strict": true,
     "target": "es5",
-    "module": "es2015",
+    "module": "commonjs",
     "sourceMap": true,
     "lib": [
       "es2015",
@@ -19,6 +18,7 @@
       "node_modules/@types",
       "@types"
     ],
+    "strict": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
