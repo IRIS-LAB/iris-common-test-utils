@@ -16,7 +16,7 @@
     ],
     "typeRoots": [
       "node_modules/@types",
-      "@types"
+      "jest.extend"
     ],
     "strict": true,
     "allowJs": true,
@@ -30,7 +30,7 @@
   "include": [
     "src/**/*.ts",
     "spec/**/*.ts",
-    "@types/**/*.d.ts"
+    "jest.extend.d.ts"
   ],
   "exclude": [
     "node_modules"
