@@ -2,20 +2,18 @@
 > Javascript test utils for IRIS
 
 ## Usage
-To use iris-common-test-utils in your tests, you need to add the type _@u-iris/iris-common-test-utils_ in your tsconfig.json :
+To use iris-common-test-utils in your tests, you need to add the type `@u-iris/iris-common-test-utils` in your tsconfig.json :
 ```json
 {
-    // ...
     "types": [
         "jest",
         "@u-iris/iris-common-test-utils"
-        //...
-    ],
-    // ...
+
+    ]
 }
 ```
 
-Then if you want to use jest specific matchers, import _@u-iris/iris-common-test-utils_ at the top of your test file :
+Then if you want to use jest specific matchers, import `@u-iris/iris-common-test-utils` at the top of your test file :
 ```js
 import '@u-iris/iris-common-test-utils'
 
@@ -58,6 +56,7 @@ describe('functionOne', () => {
 ## Changelog
 | Version | Comment |
 |---|---|
+| 3.0.0 | <ul><li>depends on @u-iris/iris-common@3.0.0</li></ul> |
 | 1.0.1 | <ul><li>export jest matchers typings</li><li>improve documentation</li></ul> |
 | 1.0.0 | <ul><li>Initial version</li></ul> |
 
