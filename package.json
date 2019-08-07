@@ -6,7 +6,7 @@
   "types": "dist/types/index.d.ts",
   "files": [
     "dist",
-    "@types/expect.d.ts"
+    "jest.extend.d.ts"
   ],
   "scripts": {
     "build": "rm -rf dist/ && tsc -p tsconfig.build.json",
