@@ -1,29 +1,38 @@
 import jest from 'jest'
+import diff from 'jest-diff'
 
 const jestExpect: jest.Expect = (global as any).expect
 
 if (jestExpect !== undefined) {
     jestExpect.extend({
-        toContainObjectLike(received: any[], argument: any) {
+        toContainObjectLike(received: any[], expected: any) {
             const pass = this.equals(received,
-                expect.arrayContaining([
-                    expect.objectContaining(argument)
-                ])
+              expect.arrayContaining([
+                  expect.objectContaining(expected)
+              ])
             )
+            const message = pass ?
+              () =>
+                this.utils.matcherHint('toContainObjectLike') +
+                '\n\n' +
+                `Expected: ${this.utils.printReceived(expected)}\n` +
+                `Received: ${this.utils.printExpected(received)}`
+              : () => {
+                  const diffString = diff(expected, received, {
+                      expand: this.expand
+                  })
+                  return (
+                    this.utils.matcherHint('toContainObjectLike') +
+                    '\n\n' +
+                    (diffString && diffString.includes('- Expect')
+                      ? `Difference:\n\n${diffString}`
+                      : `Expected: ${this.utils.printExpected(expected)}\n` +
+                      `Received: ${this.utils.printReceived(received)}`)
+                  )
+              }
 
-            if (pass) {
-                return {
-                    message: () => (`expected ${this.utils.printReceived(received)} not to contain object ${this.utils.printExpected(argument)}`),
-                    pass: true
-                }
-            } else {
-                return {
-                    message: () => (`expected ${this.utils.printReceived(received)} to contain object ${this.utils.printExpected(argument)}`),
-                    pass: false
-                }
-            }
+            return { actual: received, message, pass, expected: [expected] }
         }
-
     })
 } else {
     // tslint:disable-next-line:no-console

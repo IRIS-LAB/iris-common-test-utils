@@ -4,7 +4,7 @@ import {
   SecurityException,
   TechnicalException
 } from '@u-iris/iris-common'
-import { callFunctionAndCheckResult, checkException, checkFunctionCall } from '../../src'
+import { TestsUtils } from '../../src'
 
 describe('TestUtils', () => {
   describe('test', () => {
@@ -21,7 +21,7 @@ describe('TestUtils', () => {
       }
       jest.spyOn(module, 'fct').mockImplementation(() => 'cool')
       module.fct('example', 5)
-      checkFunctionCall(module.fct, 'example', 5)
+      TestsUtils.checkFunctionCall(module.fct, 'example', 5)
     })
     it('should return error', () => {
       const module = {
@@ -32,7 +32,7 @@ describe('TestUtils', () => {
       jest.spyOn(module, 'fct').mockImplementation(() => 'cool')
       module.fct('example', 5)
       try {
-        checkFunctionCall(module.fct, 'baD param', 5)
+        TestsUtils.checkFunctionCall(module.fct, 'baD param', 5)
         expect(false).toBeTruthy()
       } catch (e) {
         expect(e).toBeDefined()
@@ -48,7 +48,7 @@ describe('TestUtils', () => {
       }
       // jest.spyOn(module, 'fct').mockImplementation(() => 'cool')
       module.fct('example', 5)
-      await callFunctionAndCheckResult(module.fct, 'example 5', 'example', 5)
+      await TestsUtils.callFunctionAndCheckResult(module.fct, 'example 5', 'example', 5)
     })
     it('should return error', async () => {
       const module = {
@@ -59,7 +59,7 @@ describe('TestUtils', () => {
       // jest.spyOn(module, 'fct').mockImplementation(() => 'cool')
       module.fct('example', 5)
       try {
-        await callFunctionAndCheckResult(module.fct, 'example5', 'example', 5)
+        await TestsUtils.callFunctionAndCheckResult(module.fct, 'example5', 'example', 5)
         expect(false).toBeTruthy()
       } catch (e) {
         expect(e).toBeDefined()
@@ -68,67 +68,42 @@ describe('TestUtils', () => {
   })
 
   describe('checkException', () => {
-    it('should valid exception codeErreur and error erreurs', async () => {
+    it('should valid exception code and error erreurs', async () => {
       const module = {
-        fct: async (type: string, name: number) => {
-          throw new BusinessException([{
-            champErreur: 'champErreur',
-            codeErreur: 'required',
-            libelleErreur: 'champErreur is required'
-          }])
+        fct: async () => {
+          throw new BusinessException([{ field: 'field', code: 'required', label: 'field is required' }])
         }
       }
-      await checkException(BusinessException, [{
-        champErreur: 'champErreur',
-        codeErreur: 'required'
-      }], module.fct, 'example5')
+      await TestsUtils.checkException(BusinessException, [{ field: 'field', code: 'required' }], module.fct)
     })
 
     it('should valid exception for children of BusinessException', async () => {
       const module = {
-        fct: async (type: string, name: number) => {
-          throw new EntityNotFoundBusinessException({
-            champErreur: 'champErreur',
-            codeErreur: 'required',
-            libelleErreur: 'champErreur is required'
-          })
+        fct: async () => {
+          throw new EntityNotFoundBusinessException({ field: 'field', code: 'required', label: 'field is required' })
         }
       }
-      await checkException(EntityNotFoundBusinessException, [{
-        champErreur: 'champErreur',
-        codeErreur: 'required'
-      }], module.fct, 'example5')
+      await TestsUtils.checkException(EntityNotFoundBusinessException, [{
+        field: 'field',
+        code: 'required'
+      }], module.fct)
     })
     it('should valid exception for children of SecurityException', async () => {
       const module = {
-        fct: async (type: string, name: number) => {
-          throw new SecurityException([{
-            champErreur: 'champErreur',
-            codeErreur: 'required',
-            libelleErreur: 'champErreur is required'
-          }])
+        fct: async () => {
+          throw new SecurityException([{ field: 'field', code: 'required', label: 'field is required' }])
         }
       }
-      await checkException(SecurityException, [{
-        champErreur: 'champErreur',
-        codeErreur: 'required'
-      }], module.fct, 'example5')
+      await TestsUtils.checkException(SecurityException, [{ field: 'field', code: 'required' }], module.fct)
     })
-    it('should reject bad exception codeErreur', async () => {
+    it('should reject bad exception code', async () => {
       const module = {
-        fct: async (type: string, name: number) => {
-          throw new BusinessException([{
-            champErreur: 'champErreur',
-            codeErreur: 'champErreur.required',
-            libelleErreur: 'champErreur is required'
-          }])
+        fct: async () => {
+          throw new BusinessException([{ field: 'field', code: 'field.required', label: 'field is required' }])
         }
       }
       try {
-        await checkException(TechnicalException, [{
-          champErreur: 'champErreur',
-          codeErreur: 'required'
-        }], module.fct, 'example5')
+        await TestsUtils.checkException(TechnicalException, [{ field: 'field', code: 'required' }], module.fct)
         expect(false).toBeTruthy()
       } catch (e) {
         expect(e).toBeDefined()
@@ -136,19 +111,12 @@ describe('TestUtils', () => {
     })
     it('should reject bad error code', async () => {
       const module = {
-        fct: async (type: string, name: number) => {
-          throw new BusinessException([{
-            champErreur: 'champErreur',
-            codeErreur: 'champErreur.required',
-            libelleErreur: 'champErreur is required'
-          }])
+        fct: async () => {
+          throw new BusinessException([{ field: 'field', code: 'field.required', label: 'field is required' }])
         }
       }
       try {
-        await checkException(BusinessException, [{
-          champErreur: 'otherfield',
-          codeErreur: 'required'
-        }], module.fct, 'example5')
+        await TestsUtils.checkException(BusinessException, [{ field: 'otherfield', code: 'required' }], module.fct)
         expect(false).toBeTruthy()
       } catch (e) {
         expect(e).toBeDefined()
@@ -156,17 +124,17 @@ describe('TestUtils', () => {
     })
     it('should reject multiple bad error code for method async', async () => {
       const module = {
-        fct: async (type: string, name: number) => {
+        fct: async () => {
           throw new BusinessException([
-            { champErreur: 'champErreur', codeErreur: 'required', libelleErreur: 'champErreur is required' },
-            { champErreur: 'field2', codeErreur: 'string.max', libelleErreur: 'field2 is max' }])
+            { field: 'field', code: 'required', label: 'field is required' },
+            { field: 'field2', code: 'string.max', label: 'field2 is max' }])
         }
       }
       try {
-        await checkException(BusinessException, [
-          { champErreur: 'champErreur', codeErreur: 'required' },
-          { champErreur: 'field2', codeErreur: 'string.max' }
-        ], module.fct, 'example5')
+        await TestsUtils.checkException(BusinessException, [
+          { field: 'field', code: 'required' },
+          { field: 'field2', code: 'string.max' }
+        ], module.fct)
         expect(false).toBeTruthy()
       } catch (e) {
         expect(e).toBeDefined()
@@ -174,17 +142,17 @@ describe('TestUtils', () => {
     })
     it('should reject multiple bad error code for method sync', async () => {
       const module = {
-        fct: (type: string, name: number) => {
+        fct: () => {
           throw new BusinessException([
-            { champErreur: 'champErreur', codeErreur: 'required', libelleErreur: 'champErreur is required' },
-            { champErreur: 'field2', codeErreur: 'string.max', libelleErreur: 'field2 is max' }])
+            { field: 'field', code: 'required', label: 'field is required' },
+            { field: 'field2', code: 'string.max', label: 'field2 is max' }])
         }
       }
       try {
-        await checkException(BusinessException, [
-          { champErreur: 'champErreur', codeErreur: 'required' },
-          { champErreur: 'field2', codeErreur: 'string.max' }
-        ], module.fct, 'example5')
+        await TestsUtils.checkException(BusinessException, [
+          { field: 'field', code: 'required' },
+          { field: 'field2', code: 'string.max' }
+        ], module.fct)
         expect(false).toBeTruthy()
       } catch (e) {
         expect(e).toBeDefined()
