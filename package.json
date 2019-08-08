@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/IRIS-LAB/iris-common-test-utils#readme",
   "peerDependencies": {
-    "@u-iris/iris-common": "~3.0.1",
-    "lodash": "~4.17.15",
+    "@u-iris/iris-common": ">=3.0.1",
+    "lodash": ">=4.17.15",
     "jest": "~24.8.0",
     "jest-diff": "~24.8.0"
   },
