@@ -35,12 +35,14 @@ export class TestsUtils {
    * @param {function} functionToHaveBeenCalled
    * @param  {...any} functionArgs
    */
-// tslint:disable-next-line:ban-types
-  public static checkFunctionCall<T extends (...args: any[]) => any>(functionToHaveBeenCalled: T, ...functionArgs: Parameters<T>) {
+  // tslint:disable-next-line:ban-types
+  public static checkFunctionCall<T extends (...args: any[]) => any>(
+    functionToHaveBeenCalled: T,
+    ...functionArgs: Parameters<T>
+  ) {
     expect(functionToHaveBeenCalled).toHaveBeenCalledTimes(1)
     expect(functionToHaveBeenCalled).toHaveBeenCalledWith(...functionArgs)
   }
-
 
   /**
    * Function checking that an exception is thrown when an async function is called
@@ -49,7 +51,14 @@ export class TestsUtils {
    * @param {function} functionToTest, function to call
    * @param  {...any} functionArgs, arguments of the function to call
    */
-  public static async checkException<T extends IrisException, F extends (...args: any[]) => any>(exceptionClass: new (...args: any[]) => T, errors: IErrorChecked[], functionToTest: F, ...functionArgs: Parameters<F>
+  public static async checkException<
+    T extends IrisException,
+    F extends (...args: any[]) => any
+  >(
+    exceptionClass: new (...args: any[]) => T,
+    errors: IErrorChecked[],
+    functionToTest: F,
+    ...functionArgs: Parameters<F>
   ): Promise<void> {
     // tslint:disable-next-line:no-console
     console.log('expect %s', exceptionClass.prototype.constructor.name)
@@ -60,7 +69,6 @@ export class TestsUtils {
       if (r instanceof Promise) {
         await r
       }
-
     } catch (e) {
       // checking exception throwed within async function
       result = e
@@ -84,7 +92,9 @@ export class TestsUtils {
     for (const expectedError of errors) {
       const { field, code } = expectedError
       expect(exception.errors).toContainObjectLike({ field, code })
-      const errorThrown = exception.errors.find(e => e.field === expectedError.field && e.code === expectedError.code)
+      const errorThrown = exception.errors.find(
+        e => e.field === expectedError.field && e.code === expectedError.code
+      )
       expect(errorThrown).toBeDefined()
       if (errorThrown && expectedError.label) {
         expect(errorThrown.label).toEqual(expectedError.label)
@@ -98,12 +108,19 @@ export class TestsUtils {
    * Function creating an object of mocked functions (for ex., used to mock models or dao in node projects)
    * @param {*} functionsToMock (array of objects like { path: 'function.path.inFinalObject', value: returnedValueOfTheMock })
    */
-  public static initMocks(functionsToMock: Array<{ path: string, value: any }>) {
+  public static initMocks(
+    functionsToMock: Array<{ path: string; value: any }>
+  ) {
     const mocksObject = {}
     functionsToMock.forEach(functionToMock => {
-      _set(mocksObject, functionToMock.path, jest.fn(() => functionToMock.value))
+      _set(
+        mocksObject,
+        functionToMock.path,
+        jest.fn(() => functionToMock.value)
+      )
     })
     return mocksObject
   }
 
+  public static executeAction() {}
 }
