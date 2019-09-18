@@ -6,19 +6,14 @@ module.exports = {
   moduleNameMapper: {
     '^~/(.*)$': '<rootDir>/src/$1'
   },
-  moduleFileExtensions: [
-    'js',
-    'ts',
-    'json'
-  ],
+  moduleFileExtensions: ['js', 'ts', 'json'],
   transform: {
-    "^.+\\.(ts|js)$": "ts-jest"
+    '^.+\\.(ts|js)$': 'ts-jest'
   },
+  setupFilesAfterEnv: ['jest-expect-message'],
   collectCoverage: false,
   coverageDirectory: '<rootDir>/coverage',
-  collectCoverageFrom: [
-    '<rootDir>/src/**/*'
-  ],
+  collectCoverageFrom: ['<rootDir>/src/**/*'],
   testMatch: [
     '<rootDir>/spec/unit/**/*.spec.(js|jsx|ts|tsx)',
     '<rootDir>/spec/e2e/**/*.e2e-spec.(js|jsx|ts|tsx)'
@@ -26,20 +21,18 @@ module.exports = {
   testEnvironment: 'node',
   reporters: [
     'default',
-    ['./node_modules/jest-html-reporter', {
-      'pageTitle': 'Test Report',
-      'outputPath': './reports/test-results.html',
-      'includeFailureMsg': true
-    }]
+    [
+      './node_modules/jest-html-reporter',
+      {
+        pageTitle: 'Test Report',
+        outputPath: './reports/test-results.html',
+        includeFailureMsg: true
+      }
+    ]
   ],
-  coverageReporters: [
-    'text',
-    'html',
-    'cobertura',
-    'lcov'
-  ],
+  coverageReporters: ['text', 'html', 'cobertura', 'lcov'],
   globals: {
-    "ts-jest": {
+    'ts-jest': {
       diagnostics: true
     }
   }

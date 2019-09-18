@@ -14,6 +14,19 @@ interface IErrorChecked {
   [key: string]: any
 }
 
+interface TestActionParameter<T extends (...args: any[]) => any> {
+  action: T
+  payload?: Parameters<T>[1]
+  state?: any
+  rootState?: any
+  getters?: any
+  rootGetters?: any
+  expectedMutations?: Array<{ type: string; payload?: any }>
+  expectedActions?: Array<{ type: string; payload?: any }>
+  expectedException?: typeof IrisException
+  done?: () => void
+}
+
 export class TestsUtils {
   /**
    * Function calling an async function with arguments and checking than its result is correct
@@ -121,6 +134,98 @@ export class TestsUtils {
     })
     return mocksObject
   }
+  public static async test<T extends (...args: any[]) => any>(
+    obj: TestActionParameter<T>
+  ) {
+    expect(false).toBeTruthy()
+  }
 
-  public static executeAction() {}
+  public static async executeAction<T extends (...args: any[]) => any>(
+    obj: TestActionParameter<T>
+  ) {
+    let countMutation = 0
+    let countAction = 0
+    const action = obj.action
+    const payload = obj.payload
+    const state = obj.state || {}
+    const getters = obj.getters
+    const rootState = obj.rootState
+    const rootGetters = obj.rootGetters
+    const expectedMutations = obj.expectedMutations ? obj.expectedMutations : []
+    const expectedActions = obj.expectedActions ? obj.expectedActions : []
+    const expectedException = obj.expectedException
+    const done = obj.done
+
+    // mock commit
+    const commit = (type: any, payload: any) => {
+      const mutation = expectedMutations[countMutation]
+      expect(
+        mutation,
+        `Missing mutation '${type}'. Mutation is dispatched but not expected`
+      ).toBeDefined()
+      expect(
+        type,
+        `Mutation '${type}' is not the same as expected '${mutation.type}'`
+      ).toEqual(mutation.type)
+      expect(type).toEqual(mutation.type)
+      if (payload) {
+        expect(
+          payload,
+          `Mutation payload for type '${type}' is not as expected`
+        ).toEqual(mutation.payload)
+      }
+
+      countMutation++
+    }
+
+    // mock actions
+    const dispatch = (type: any, payload: any) => {
+      const action = expectedActions[countAction]
+      expect(
+        action,
+        `Action '${type}' is dispatched but not expected`
+      ).toBeDefined()
+      expect(
+        type,
+        `Action '${type}' is not the same as expected '${action.type}'`
+      ).toEqual(action.type)
+      if (payload) {
+        expect(
+          payload,
+          `Action payload for type '${type}' is not as expected`
+        ).toEqual(action.payload)
+      }
+      countAction++
+    }
+
+    if (typeof expectedException === 'undefined') {
+      await action(
+        { dispatch, commit, state, getters, rootState, rootGetters },
+        payload
+      )
+    } else {
+      try {
+        await action(
+          { dispatch, commit, state, getters, rootState, rootGetters },
+          payload
+        )
+        expect(true).toBeFalsy()
+      } catch (e) {
+        expect(e, `Expected exception was not thrown`).toBeInstanceOf(
+          expectedException
+        )
+      }
+    }
+
+    expect(countMutation, 'Problème sur le total des mutations attendues').toBe(
+      expectedMutations.length
+    )
+    expect(countAction, 'Problème sur le total des actions attendues').toBe(
+      expectedActions.length
+    )
+
+    if (typeof done === 'function') {
+      done()
+    }
+  }
 }
