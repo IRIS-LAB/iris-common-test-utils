@@ -217,10 +217,10 @@ export class TestsUtils {
       }
     }
 
-    expect(countMutation, 'Problème sur le total des mutations attendues').toBe(
+    expect(countMutation, 'Wrong expected mutation total').toBe(
       expectedMutations.length
     )
-    expect(countAction, 'Problème sur le total des actions attendues').toBe(
+    expect(countAction, 'Wrong expected action total').toBe(
       expectedActions.length
     )
 
