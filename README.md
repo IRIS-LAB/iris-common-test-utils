@@ -55,6 +55,8 @@ describe('functionOne', () => {
 ## Changelog
 | Version | Comment |
 |---|---|
+| 3.0.3 | <ul><li>fix typings export</li></ul> |
+| 3.0.2 | <ul><li>improve dependencies</li></ul> |
 | 3.0.1 | <ul><li>add custom jest matchers in root directory</li></ul> |
 | 3.0.0 | <ul><li>depends on @u-iris/iris-common@3.0.0</li></ul> |
 | 1.0.1 | <ul><li>export jest matchers typings</li><li>improve documentation</li></ul> |
