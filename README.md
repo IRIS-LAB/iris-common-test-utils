@@ -25,40 +25,71 @@ describe('my test', () => {
 ## Unit Test Helpers
 
 Severals utils functions for unit tests are available :
+```typescript
+/**
+     * Function calling an async function with arguments and checking than its result is correct
+     * @param {*} functionToCall
+     * @param {*} expectedResult
+     * @param  {...any} functionArgs
+     */
+    static callFunctionAndCheckResult<R>(functionToCall: (...args: any[]) => Promise<R>, expectedResult: R, ...functionArgs: Parameters<typeof functionToCall>): Promise<void>;
 
-- **callFunctionAndCheckResult**: function calling an async function with arguments and checking than its result is correct.  
-  _`async function callFunctionAndCheckResult(functionToCall, expectedResult, ...functionArgs)`_
+    /**
+     * Function checking if a given function has been called with given params as arguments
+     * @param {function} functionToHaveBeenCalled
+     * @param  {...any} functionArgs
+     */
+    static checkFunctionCall<T extends (...args: any[]) => any>(functionToHaveBeenCalled: T, ...functionArgs: Parameters<T>): void;
 
-- **checkFunctionCall**: function checking if a given function has been called exactly one time, with given params as arguments.  
-  _`function checkFunctionCall(functionToHaveBeenCalled, ...functionArgs)`_
+    /**
+     * Check that an IrisException contains some errors.
+     * @param exception - the IrisException
+     * @param errors - errors like
+     */
+    static expectExceptionToContain(exception: IrisException, ...errors: Array<{
+        field?: string;
+        code?: string;
+        label?: string;
+        limit?: number;
+        value?: any;
+        path?: Array<string | number>;
+    }>): void;
 
-- **checkException**: function checking that an exception is thrown when an async function is called.  
-  Its arguments are the constructor of the thrown exception, an exhaustive array of the error codes thrown in exception, the function to call, and the arguments of the function to call.  
-  _`async function checkException(exceptionClass, errorCodes, functionToTest, ...functionArgs)`_
+    /**
+     * Check that a function throws an IrisException by checking the exception type and the errors contained into the exception.
+     * @param fct - the function to call
+     * @param exceptionType - a subclass of IrisException
+     * @param errors - the errors
+     */
+    static expectThrowIrisExceptionLike<T extends IrisException>(fct: (...args: any[]) => any, exceptionType: new (...args: any[]) => T, ...errors: Array<{
+        field?: string;
+        code?: string;
+        label?: string;
+        limit?: number;
+        value?: any;
+        path?: Array<string | number>;
+    }>): Promise<void>;
 
-- **initMocks**: function creating an object of mocked functions (for ex., used to mock models or dao in node projects).  
-  Its argument should be an array of objects like `{ path: 'function.path.inFinalObject', value: returnedValueOfTheMock }`.  
-  _`function initMocks(functionsToMock)`_
+    /**
+     * Function checking that an exception is thrown when an async function is called
+     * @param {*} exceptionClass, constructor of the thrown exception
+     * @param {array} errors, exhaustive array of the error erreurs thrown in exception
+     * @param {function} functionToTest, function to call
+     * @param  {...any} functionArgs, arguments of the function to call
+     * @deprecated use expectThrowIrisExceptionLike instead
+     */
+    static checkException<T extends IrisException, F extends (...args: any[]) => any>(exceptionClass: new (...args: any[]) => T, errors: IErrorChecked[], functionToTest: F, ...functionArgs: Parameters<F>): Promise<void>;
 
-```js
-import { checkFunctionCall } from '@u-iris/iris-common'
-import { functionOne } from 'moduleToTest' // function taking two parameters
-describe('functionOne', () => {
-    it('should call functionTwo with arguments "toto" and "test", and return "tototest", when called with the parameter "toto" and "test"', async () => {
-        const functionTwo = jest.fn()
-        await callFunctionAndCheckResult(functionOne, "tototest", "toto", "test")
-        checkFunctionCall(functionTwo, "toto", "test")
-    })
-})
+    /**
+     * Function creating an object of mocked functions (for ex., used to mock models or dao in node projects)
+     * @param {*} functionsToMock (array of objects like { path: 'function.path.inFinalObject', value: returnedValueOfTheMock })
+     */
+    static initMocks(functionsToMock: Array<{
+        path: string;
+        value: any;
+    }>): {}; 
 ```
 
 ## Changelog
-| Version | Comment |
-|---|---|
-| 3.0.3 | <ul><li>fix typings export</li></ul> |
-| 3.0.2 | <ul><li>improve dependencies</li></ul> |
-| 3.0.1 | <ul><li>add custom jest matchers in root directory</li></ul> |
-| 3.0.0 | <ul><li>depends on @u-iris/iris-common@3.0.0</li></ul> |
-| 1.0.1 | <ul><li>export jest matchers typings</li><li>improve documentation</li></ul> |
-| 1.0.0 | <ul><li>Initial version</li></ul> |
+see [CHANGELOG.md](CHANGELOG.md)
 
