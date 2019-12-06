@@ -159,4 +159,90 @@ describe('TestUtils', () => {
       }
     })
   })
+
+  describe('expectThrowIrisExceptionLike', () => {
+    it('should valid exception code and error erreurs', async () => {
+      await TestsUtils.expectThrowIrisExceptionLike(
+        () => {
+          throw new BusinessException([{ field: 'field', code: 'required', label: 'field is required' }])
+        },
+        BusinessException,
+        { field: 'field', code: 'required' })
+    })
+
+    it('should valid exception for children of BusinessException', async () => {
+      await TestsUtils.expectThrowIrisExceptionLike(async () => {
+          throw new EntityNotFoundBusinessException({ field: 'field', code: 'required', label: 'field is required' })
+        },
+        EntityNotFoundBusinessException, {
+          field: 'field',
+          code: 'required'
+        })
+    })
+    it('should valid exception for children of SecurityException', async () => {
+      await TestsUtils.expectThrowIrisExceptionLike(
+        async () => {
+          throw new SecurityException([{ field: 'field', code: 'required', label: 'field is required' }])
+        },
+        SecurityException, { field: 'field', code: 'required' })
+    })
+    it('should reject bad exception code', async () => {
+      try {
+        await TestsUtils.expectThrowIrisExceptionLike(
+          async () => {
+            throw new BusinessException([{ field: 'field', code: 'field.required', label: 'field is required' }])
+          },
+          TechnicalException,
+          { field: 'field', code: 'required' })
+        expect(false).toBeTruthy()
+      } catch (e) {
+        expect(e).toBeDefined()
+      }
+    })
+    it('should reject bad error code', async () => {
+      try {
+        await TestsUtils.expectThrowIrisExceptionLike(
+          async () => {
+            throw new BusinessException([{ field: 'field', code: 'field.required', label: 'field is required' }])
+          },
+          BusinessException, { field: 'otherfield', code: 'required' })
+        expect(false).toBeTruthy()
+      } catch (e) {
+        expect(e).toBeDefined()
+      }
+    })
+    it('should reject multiple bad error code for method async', async () => {
+      try {
+        await TestsUtils.expectThrowIrisExceptionLike(
+          async () => {
+            throw new BusinessException([
+              { field: 'field', code: 'required', label: 'field is required' },
+              { field: 'field2', code: 'string.max', label: 'field2 is max' }])
+          },
+          BusinessException,
+          { field: 'field', code: 'required' },
+          { field: 'field2', code: 'string.max' })
+
+        expect(false).toBeTruthy()
+      } catch (e) {
+        expect(e).toBeDefined()
+      }
+    })
+    it('should reject multiple bad error code for method sync', async () => {
+      try {
+        await TestsUtils.expectThrowIrisExceptionLike(
+          () => {
+            throw new BusinessException([
+              { field: 'field', code: 'required', label: 'field is required' },
+              { field: 'field2', code: 'string.max', label: 'field2 is max' }])
+          },
+          BusinessException,
+          { field: 'field', code: 'required' },
+          { field: 'field2', code: 'string.max' })
+        expect(false).toBeTruthy()
+      } catch (e) {
+        expect(e).toBeDefined()
+      }
+    })
+  })
 })

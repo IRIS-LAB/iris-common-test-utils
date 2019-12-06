@@ -41,6 +41,43 @@ export class TestsUtils {
     expect(functionToHaveBeenCalled).toHaveBeenCalledWith(...functionArgs)
   }
 
+  /**
+   * Check that an IrisException contains some errors.
+   * @param exception - the IrisException
+   * @param errors - errors like
+   */
+  public static expectExceptionToContain(exception: IrisException, ...errors: Array<{ field?: string, code?: string, label?: string, limit?: number, value?: any, path?: Array<string | number> }>) {
+    expect(exception).toBeDefined()
+    expect(exception.errors).toBeDefined()
+    if (errors) {
+      for (const e of errors) {
+        expect(exception.errors).toContainObjectLike(e)
+      }
+    }
+  }
+
+  /**
+   * Check that a function throws an IrisException by checking the exception type and the errors contained into the exception.
+   * @param fct - the function to call
+   * @param exceptionType - a subclass of IrisException
+   * @param errors - the errors
+   */
+  public static async expectThrowIrisExceptionLike<T extends IrisException>(fct: (...args: any[]) => any, exceptionType: new(...args: any[]) => T, ...errors: Array<{ field?: string, code?: string, label?: string, limit?: number, value?: any, path?: Array<string | number> }>) {
+    let exception
+    try {
+      let r = fct()
+      if (r instanceof Promise) {
+        r = await r
+      }
+    } catch (e) {
+      exception = e
+    }
+
+    expect(exception).toBeDefined()
+    expect(exception).toBeInstanceOf(exceptionType)
+    TestsUtils.expectExceptionToContain(exception, ...errors)
+  }
+
 
   /**
    * Function checking that an exception is thrown when an async function is called
@@ -48,6 +85,7 @@ export class TestsUtils {
    * @param {array} errors, exhaustive array of the error erreurs thrown in exception
    * @param {function} functionToTest, function to call
    * @param  {...any} functionArgs, arguments of the function to call
+   * @deprecated use expectThrowIrisExceptionLike instead
    */
   public static async checkException<T extends IrisException, F extends (...args: any[]) => any>(exceptionClass: new (...args: any[]) => T, errors: IErrorChecked[], functionToTest: F, ...functionArgs: Parameters<F>
   ): Promise<void> {
