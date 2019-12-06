@@ -1,6 +1,6 @@
 {
   "name": "@u-iris/iris-common-test-utils",
-  "version": "3.1.0",
+  "version": "3.1.1-0",
   "description": "Common JS test utils module for IRIS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
