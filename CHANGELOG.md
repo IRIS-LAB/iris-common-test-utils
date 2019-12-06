@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 3.X.X
+## 3.1.0
 * deprecates function checkException replaced by expectThrowIrisExceptionLike
 * add function expectExceptionToContain
 
